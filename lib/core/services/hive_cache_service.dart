@@ -65,18 +65,25 @@ class HiveCacheService {
       Map<String, dynamic> cachedData = {};
 
       String? cacheKeyData = _boxList.first.get(_cacheKey);
+      log("cacheKeyData: $cacheKeyData"); // Debugging
+
       if (cacheKeyData != null && cacheKeyData.isNotEmpty) {
-        Map<String, dynamic> responseData = jsonDecode(cacheKeyData);
-        if (responseData.containsKey(key)) {
-          cachedData = responseData[key];
-          if (cachedData.isNotEmpty) {
-            return cachedData;
+        try {
+          Map<String, dynamic> responseData = jsonDecode(cacheKeyData);
+          log("responseData: $responseData"); // Debugging
+
+          if (responseData.containsKey(key)) {
+            var data = responseData[key];
+
+            return data;
           }
+        } catch (e) {
+          log("Error decoding JSON: $e");
         }
       }
       return cachedData;
     } catch (e) {
-      log("::: Can't Return Data From Hive ::: [Local Stogare] :::");
+      log("::: Can't Return Data From Hive ::: [Local Storage] ::: Error: $e");
       return {};
     }
   }
