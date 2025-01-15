@@ -1,14 +1,18 @@
-import 'dart:developer';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_signin_button/button_list.dart';
+import 'package:flutter_signin_button/button_view.dart';
+import 'package:reel/core/constants/app_colors.dart';
 import 'package:reel/core/constants/enum.dart';
+import 'package:reel/core/extension/widget_extension.dart';
+import 'package:reel/core/services/service_locator.dart';
+import 'package:reel/core/utils/decore_utils.dart';
+import 'package:reel/feature/auth/presentation/auth_bloc/auth_bloc.dart';
+import 'package:reel/feature/widget/custom_button.dart';
+import 'package:reel/feature/widget/text_field_widget.dart';
 
-/// Login screen implementation.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -21,156 +25,173 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final ValueNotifier<AuthMode> _authMode =
+      ValueNotifier<AuthMode>(AuthMode.LOGIN);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: FocusScope.of(context).unfocus,
-      child: Scaffold(
-        body: Center(
-          child: SingleChildScrollView(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SafeArea(
-                  child: Form(
-                    key: formKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 400),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (error.isNotEmpty)
-                            MaterialBanner(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.error,
-                              content: SelectableText(error),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      error = '';
-                                    });
-                                  },
-                                  child: const Text(
-                                    'Dismiss',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                              contentTextStyle:
-                                  const TextStyle(color: Colors.white),
-                              padding: const EdgeInsets.all(10),
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          return Scaffold(
+            body: Form(
+              key: _formKey,
+              child: ValueListenableBuilder(
+                  valueListenable: _authMode,
+                  builder: (_, mode, __) {
+                    return Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'LogIn',
+                              style: Theme.of(context).textTheme.headlineLarge,
                             ),
-                          const SizedBox(height: 20),
-                          _buildEmailPasswordFields(),
-                          const SizedBox(height: 20),
-                          _buildSignInButton(),
-                          TextButton(
-                            onPressed: _resetPassword,
-                            child: const Text('Forgot password?'),
-                          ),
-                          ...authButtons.keys.map(
-                            (button) => Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5),
+                            20.verticalSpace,
+                            TextFieldWidget(
+                              controller: emailController,
+                              labelText: 'Email',
+                              hintText: 'email',
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Email is required';
+                                }
+                                return null;
+                              },
+                              keyboardType: TextInputType.emailAddress,
+                            ).padBottom(bottom: 20.h),
+                            TextFieldWidget(
+                              controller: passwordController,
+                              labelText: 'Password',
+                              hintText: 'password',
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Password is required';
+                                }
+                                if (value.length < 5) {
+                                  return 'Password must be at least 6 characters long';
+                                }
+                                return null;
+                              },
+                              isPassword: true,
+                            ).padBottom(bottom: 20.h),
+                            if (mode == AuthMode.REGISTER) ...{
+                              TextFieldWidget(
+                                controller: confirmPasswordController,
+                                labelText: 'Confirm Password',
+                                hintText: 'confirm password',
+                                isPassword: true,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Confirm Password is required';
+                                  }
+                                  if (value != passwordController.text.trim()) {
+                                    return 'Passwords do not match';
+                                  }
+                                  return null;
+                                },
+                              ).padBottom(bottom: 20.h),
+                            },
+                            if (state.loginStatus == AbsNormalStatus.ERROR) ...{
+                              Container(
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w,
+                                  vertical: 10.h,
+                                ),
+                                width: double.maxFinite,
+                                decoration: boxDecoration(
+                                  color: Colors.red.shade100,
+                                  borderColor: AppColors.absentColor,
+                                ),
+                                child: Text(
+                                  state.message,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color: AppColors.errorColor,
+                                      ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ).padBottom(bottom: 20.h),
+                            },
+                            CustomButton(
+                              isLoading: false,
+                              lable: mode == AuthMode.LOGIN
+                                  ? "Log In"
+                                  : 'Register',
+                              onTap: () {
+                                if (mode == AuthMode.LOGIN) {
+                                  if (_formKey.currentState!.validate()) {
+                                    if (mode == AuthMode.LOGIN) {
+                                      getIt<AuthBloc>().add(AuthLogInEvent(
+                                        email: emailController.text.trim(),
+                                        password:
+                                            passwordController.text.trim(),
+                                      ));
+                                    } else {
+                                      getIt<AuthBloc>().add(AuthRegisterEvent(
+                                        email: emailController.text.trim(),
+                                        password:
+                                            passwordController.text.trim(),
+                                      ));
+                                    }
+                                  }
+                                }
+                              },
+                            ).padBottom(bottom: 20.h),
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 50,
-                                child: isLoading
-                                    ? const Center(
-                                        child: CircularProgressIndicator
-                                            .adaptive(),
-                                      )
-                                    : SignInButton(
-                                        button,
-                                        onPressed: authButtons[button]!,
-                                      ),
+                                child: SignInButton(
+                                  Buttons.Google,
+                                  onPressed: () => getIt<AuthBloc>()
+                                      .add(AuthGoogleSignInEvent()),
+                                ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          _buildToggleAuthMode(),
-                          const SizedBox(height: 10),
-                        ],
+                            ).padBottom(bottom: 20.h),
+                            RichText(
+                              text: TextSpan(
+                                text: mode == AuthMode.LOGIN
+                                    ? 'Don\'t have an account? '
+                                    : "Already have an account. ",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                                children: [
+                                  TextSpan(
+                                    text: mode == AuthMode.REGISTER
+                                        ? "Log In"
+                                        : 'Sign Up',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        if (mode == AuthMode.LOGIN) {
+                                          _authMode.value = AuthMode.REGISTER;
+                                        } else {
+                                          _authMode.value = AuthMode.LOGIN;
+                                        }
+                                      },
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
+                    ).padHorizontal(horizontal: 20.w);
+                  }),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmailPasswordFields() {
-    return Column(
-      children: [
-        TextFormField(
-          controller: emailController,
-          decoration: const InputDecoration(
-            hintText: 'Email',
-            border: OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.emailAddress,
-          autofillHints: const [AutofillHints.email],
-          validator: (value) =>
-              value != null && value.isNotEmpty ? null : 'Required',
-        ),
-        const SizedBox(height: 20),
-        TextFormField(
-          controller: passwordController,
-          obscureText: true,
-          decoration: const InputDecoration(
-            hintText: 'Password',
-            border: OutlineInputBorder(),
-          ),
-          validator: (value) =>
-              value != null && value.isNotEmpty ? null : 'Required',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSignInButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : _emailAndPassword,
-        child: isLoading
-            ? const CircularProgressIndicator.adaptive()
-            : Text(mode.label),
-      ),
-    );
-  }
-
-  Widget _buildToggleAuthMode() {
-    return RichText(
-      text: TextSpan(
-        style: Theme.of(context).textTheme.bodyLarge,
-        children: [
-          TextSpan(
-            text: mode == AuthMode.login
-                ? "Don't have an account? "
-                : 'Already have an account? ',
-          ),
-          TextSpan(
-            text: mode == AuthMode.login ? 'Register now' : 'Login',
-            style: const TextStyle(color: Colors.blue),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                setState(() {
-                  mode = mode == AuthMode.login
-                      ? AuthMode.register
-                      : AuthMode.login;
-                });
-              },
-          ),
-        ],
+          );
+        },
       ),
     );
   }

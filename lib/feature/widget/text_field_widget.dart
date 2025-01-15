@@ -9,10 +9,9 @@ import '../../../../core/constants/app_colors.dart';
 
 class TextFieldWidget extends StatefulWidget {
   final String? Function(String? value)? validator;
-  final int? maxLines;
+  final int maxLines;
   final TextStyle? textStyle;
   final VoidCallback? onTap;
-  final bool obscureText;
   final TextAlign textAlign;
   final double? labelFontSize;
   final bool enabled;
@@ -42,11 +41,10 @@ class TextFieldWidget extends StatefulWidget {
   const TextFieldWidget({
     super.key,
     this.validator,
-    this.maxLines,
+    this.maxLines = 1,
     this.textStyle,
     this.labelFontSize,
     this.onTap,
-    this.obscureText = false,
     this.textAlign = TextAlign.start,
     this.enabled = true,
     this.onSaved,

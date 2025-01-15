@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reel/core/routes/routes_name.dart';
 import 'package:reel/feature/auth/presentation/screen/login_screen.dart';
+import 'package:reel/feature/reel/presentation/screen/home_screen.dart';
 
 class RouteGenerator {
   RouteGenerator._();
@@ -13,6 +14,11 @@ class RouteGenerator {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => const LoginScreen(),
+        );
+      case RoutesName.home:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const HomeScreen(),
         );
 
       default:

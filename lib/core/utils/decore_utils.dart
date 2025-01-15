@@ -93,6 +93,19 @@ InputDecoration inputDecoration({
   );
 }
 
+BoxDecoration boxDecoration({
+  Color? color,
+  double? radius,
+  Color? borderColor,
+}) =>
+    BoxDecoration(
+      color: color ?? AppColors.whiteColor,
+      borderRadius: BorderRadius.circular(radius ?? 4.r),
+      border: Border.all(
+        color: borderColor ?? AppColors.lightGreyColor,
+      ),
+    );
+
 class PasswordSuffixIcon extends StatefulWidget {
   final VoidCallbackWithValue<bool> passwordCallBack;
 
