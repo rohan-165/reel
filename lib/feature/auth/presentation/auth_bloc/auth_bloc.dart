@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reel/core/constants/enum.dart';
+import 'package:reel/core/local_storage/hive_data.dart';
 import 'package:reel/core/local_storage/shared_pred_data.dart';
 import 'package:reel/core/routes/routes_name.dart';
 import 'package:reel/core/services/navigation_service.dart';
@@ -43,6 +44,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with AuthMixin {
             );
             if (status == AbsNormalStatus.SUCCESS) {
               getIt<AbsSharedPrefData>().setToken(value: event.email);
+              getIt<HiveData>().saveUserDetail(
+                  userModel: UserModel(
+                email: event.email,
+              ));
               getIt<NavigationService>()
                   .pushNamedAndRemoveUntil(RoutesName.home, false);
             }
@@ -73,6 +78,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with AuthMixin {
             );
             if (status == AbsNormalStatus.SUCCESS) {
               getIt<AbsSharedPrefData>().setToken(value: event.email);
+              getIt<HiveData>().saveUserDetail(
+                  userModel: UserModel(
+                email: event.email,
+              ));
               getIt<NavigationService>()
                   .pushNamedAndRemoveUntil(RoutesName.home, false);
             }
@@ -99,6 +108,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with AuthMixin {
         );
         if (status == AbsNormalStatus.SUCCESS) {
           getIt<AbsSharedPrefData>().setToken(value: userModel.email ?? '');
+          getIt<HiveData>().saveUserDetail(userModel: userModel);
           getIt<NavigationService>()
               .pushNamedAndRemoveUntil(RoutesName.home, false);
         }

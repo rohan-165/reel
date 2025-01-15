@@ -12,7 +12,7 @@ class UserModel {
     this.photoUrl,
   });
 
-  UserModel.fromJsom(Map<String, dynamic> json) {
+  UserModel.fromJson(Map<String, dynamic> json) {
     displayName = json['displayName'];
     email = json['email'];
     id = json['id'];

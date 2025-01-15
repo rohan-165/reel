@@ -13,6 +13,7 @@ import 'package:reel/core/services/navigation_service.dart';
 import 'package:reel/core/services/shared_pref_service.dart';
 import 'package:reel/core/utils/app_toast.dart';
 import 'package:reel/feature/auth/presentation/auth_bloc/auth_bloc.dart';
+import 'package:reel/feature/reel/presentation/bloc/profile_cubit.dart';
 
 import 'core/services/service_locator.dart';
 
@@ -47,8 +48,15 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthBloc>.value(
-      value: getIt<AuthBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>.value(
+          value: getIt<AuthBloc>(),
+        ),
+        BlocProvider<ProfileCubit>.value(
+          value: getIt<ProfileCubit>(),
+        ),
+      ],
       child: PopScope(
         onPopInvokedWithResult: (didPop, result) {
           DateTime now = DateTime.now();
