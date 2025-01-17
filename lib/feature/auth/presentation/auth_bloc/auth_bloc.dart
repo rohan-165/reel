@@ -24,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with AuthMixin {
     on<AuthLogInEvent>((event, emit) async {
       emit(state.copyWith(
         loginStatus: AbsNormalStatus.LOADING,
+        isGoogleAuth: event.isGoogleAuth,
       ));
       await emailAndPassword(
           mode: AuthMode.LOGIN,
@@ -43,7 +44,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with AuthMixin {
               ),
             );
             if (status == AbsNormalStatus.SUCCESS) {
-              getIt<AbsSharedPrefData>().setToken(value: event.email);
+              getIt<SharedPrefData>().setToken(value: event.email);
               getIt<HiveData>().saveUserDetail(
                   userModel: UserModel(
                 email: event.email,
@@ -58,6 +59,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with AuthMixin {
     on<AuthRegisterEvent>((event, emit) async {
       emit(state.copyWith(
         loginStatus: AbsNormalStatus.LOADING,
+        isGoogleAuth: event.isGoogleAuth,
       ));
       await emailAndPassword(
           mode: AuthMode.REGISTER,
@@ -77,7 +79,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with AuthMixin {
               ),
             );
             if (status == AbsNormalStatus.SUCCESS) {
-              getIt<AbsSharedPrefData>().setToken(value: event.email);
+              getIt<SharedPrefData>().setToken(value: event.email);
               getIt<HiveData>().saveUserDetail(
                   userModel: UserModel(
                 email: event.email,
@@ -92,6 +94,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with AuthMixin {
     on<AuthGoogleSignInEvent>((event, emit) async {
       emit(state.copyWith(
         loginStatus: AbsNormalStatus.LOADING,
+        isGoogleAuth: event.isGoogleAuth,
       ));
       // Authenticate with Google API and emit AuthSuccess or AuthFailure event
       await signInWithGoogle(callBack: ({
@@ -107,7 +110,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with AuthMixin {
           ),
         );
         if (status == AbsNormalStatus.SUCCESS) {
-          getIt<AbsSharedPrefData>().setToken(value: userModel.email ?? '');
+          getIt<SharedPrefData>().setToken(value: userModel.email ?? '');
           getIt<HiveData>().saveUserDetail(userModel: userModel);
           getIt<NavigationService>()
               .pushNamedAndRemoveUntil(RoutesName.home, false);

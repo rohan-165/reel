@@ -17,7 +17,7 @@ class _EntryScreenState extends State<EntryScreen> {
   @override
   void initState() {
     super.initState();
-    token = getIt<AbsSharedPrefData>().getToken;
+    token = getIt<SharedPrefData>().getToken;
     if (mounted) setState(() {});
   }
 
