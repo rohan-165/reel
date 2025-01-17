@@ -29,11 +29,8 @@ class _ProfileScreenState extends State<ProfileScreen> with LogoutMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-      ),
-      body: BlocBuilder<ProfileCubit, UserModel>(
+    return SafeArea(
+      child: BlocBuilder<ProfileCubit, UserModel>(
         builder: (context, state) {
           return Center(
             child: Column(

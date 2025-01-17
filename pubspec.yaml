@@ -17,6 +17,9 @@ dependencies:
  
   cupertino_icons: ^1.0.8
 
+  # Video Reel Player
+  reels_viewer: ^2.0.0
+
   # Get It service
   get_it: ^8.0.3
 

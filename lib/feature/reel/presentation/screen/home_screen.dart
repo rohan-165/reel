@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:reel/core/routes/routes_name.dart';
-import 'package:reel/core/services/navigation_service.dart';
-import 'package:reel/core/services/service_locator.dart';
+import 'package:reel/feature/profile/presentation/screen/profile_screen.dart';
+import 'package:reel/feature/reel/presentation/screen/reel_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,16 +10,41 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final ValueNotifier<int> _navIndex = ValueNotifier<int>(0);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: InkWell(
-          onTap: () =>
-              getIt<NavigationService>().navigateTo(RoutesName.profile),
-          child: Text("data"),
-        ),
-      ),
-    );
+    return ValueListenableBuilder(
+        valueListenable: _navIndex,
+        builder: (_, index, __) {
+          return Scaffold(
+            body: _view(index: index),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: index,
+              onTap: (value) => _navIndex.value = value,
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: 'Profile',
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  Widget _view({required int index}) {
+    switch (index) {
+      case 0:
+        return ReelView();
+      case 1:
+        return ProfileScreen();
+      default:
+        return ProfileScreen();
+    }
   }
 }

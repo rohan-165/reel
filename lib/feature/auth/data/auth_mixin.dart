@@ -41,6 +41,7 @@ mixin AuthMixin {
           );
           AppToasts().showToast(
             message: "No user found for that email.",
+            isSuccess: false,
           );
           break;
         case 'wrong-password':
@@ -50,6 +51,7 @@ mixin AuthMixin {
           );
           AppToasts().showToast(
             message: "Wrong password provided.",
+            isSuccess: false,
           );
           break;
         case 'email-already-in-use':
@@ -59,6 +61,7 @@ mixin AuthMixin {
           );
           AppToasts().showToast(
             message: "The email is already in use by another account.",
+            isSuccess: false,
           );
           break;
         case 'invalid-email':
@@ -68,6 +71,7 @@ mixin AuthMixin {
           );
           AppToasts().showToast(
             message: "The email address is not valid.",
+            isSuccess: false,
           );
           break;
         case 'weak-password':
@@ -77,6 +81,7 @@ mixin AuthMixin {
           );
           AppToasts().showToast(
             message: "The password is too weak.",
+            isSuccess: false,
           );
           break;
         default:
@@ -86,6 +91,7 @@ mixin AuthMixin {
           );
           AppToasts().showToast(
             message: "An error occurred: ${e.message}",
+            isSuccess: false,
           );
           break;
       }
@@ -97,6 +103,7 @@ mixin AuthMixin {
       );
       AppToasts().showToast(
         message: "An unexpected error occurred: $e",
+        isSuccess: false,
       );
     }
   }
@@ -182,6 +189,7 @@ Future<void> signInWithGoogle({
         AppToasts().showToast(
           message:
               "This email is already associated with another sign-in method.",
+          isSuccess: false,
         );
         break;
       case 'invalid-credential':
@@ -192,6 +200,7 @@ Future<void> signInWithGoogle({
         );
         AppToasts().showToast(
           message: "Invalid Google credentials. Please try again.",
+          isSuccess: false,
         );
         break;
       case 'user-disabled':
@@ -202,6 +211,7 @@ Future<void> signInWithGoogle({
         );
         AppToasts().showToast(
           message: "This user account has been disabled.",
+          isSuccess: false,
         );
         break;
       case 'operation-not-allowed':
@@ -212,6 +222,7 @@ Future<void> signInWithGoogle({
         );
         AppToasts().showToast(
           message: "Google sign-in is not enabled in Firebase.",
+          isSuccess: false,
         );
         break;
       default:
@@ -222,6 +233,7 @@ Future<void> signInWithGoogle({
         );
         AppToasts().showToast(
           message: "An error occurred: ${e.message}",
+          isSuccess: false,
         );
         break;
     }
@@ -230,6 +242,10 @@ Future<void> signInWithGoogle({
       userModel: UserModel(),
       status: AbsNormalStatus.ERROR,
       message: "An error occurred",
+    );
+    AppToasts().showToast(
+      message: "An error occurred: $e",
+      isSuccess: false,
     );
   }
 }

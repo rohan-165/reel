@@ -126,21 +126,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? "Log In"
                                   : 'Register',
                               onTap: () {
-                                if (mode == AuthMode.LOGIN) {
-                                  if (_formKey.currentState!.validate()) {
-                                    if (mode == AuthMode.LOGIN) {
-                                      getIt<AuthBloc>().add(AuthLogInEvent(
-                                        email: emailController.text.trim(),
-                                        password:
-                                            passwordController.text.trim(),
-                                      ));
-                                    } else {
-                                      getIt<AuthBloc>().add(AuthRegisterEvent(
-                                        email: emailController.text.trim(),
-                                        password:
-                                            passwordController.text.trim(),
-                                      ));
-                                    }
+                                if (_formKey.currentState!.validate()) {
+                                  if (mode == AuthMode.LOGIN) {
+                                    getIt<AuthBloc>().add(AuthLogInEvent(
+                                      email: emailController.text.trim(),
+                                      password: passwordController.text.trim(),
+                                    ));
+                                  } else {
+                                    getIt<AuthBloc>().add(AuthRegisterEvent(
+                                      email: emailController.text.trim(),
+                                      password: passwordController.text.trim(),
+                                    ));
                                   }
                                 }
                               },
