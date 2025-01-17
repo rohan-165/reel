@@ -8,6 +8,7 @@ import 'package:reel/core/services/navigation_service.dart';
 import 'package:reel/core/services/shared_pref_service.dart';
 import 'package:reel/feature/auth/presentation/auth_bloc/auth_bloc.dart';
 import 'package:reel/feature/profile/presentation/cubit/profile_cubit.dart';
+import 'package:reel/feature/reel/presentation/reel_bloc/reel_bloc.dart';
 
 GetIt getIt = GetIt.instance;
 
@@ -20,4 +21,5 @@ Future<void> setupLocator() async {
 
   getIt.registerSingleton<AuthBloc>(AuthBloc());
   getIt.registerSingleton<ProfileCubit>(ProfileCubit());
+  getIt.registerSingleton<ReelBloc>(ReelBloc());
 }

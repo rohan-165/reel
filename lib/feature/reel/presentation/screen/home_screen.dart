@@ -1,4 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:reel/core/local_storage/shared_pred_data.dart';
+import 'package:reel/core/services/service_locator.dart';
+import 'package:reel/feature/profile/presentation/cubit/profile_cubit.dart';
 import 'package:reel/feature/profile/presentation/screen/profile_screen.dart';
 import 'package:reel/feature/reel/presentation/screen/reel_view.dart';
 
@@ -10,7 +15,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ValueNotifier<int> _navIndex = ValueNotifier<int>(0);
+  final ValueNotifier<int> _navIndex = ValueNotifier<int>(1);
+  @override
+  void initState() {
+    getIt<ProfileCubit>().getUserData();
+
+    log(" token  : ${getIt<AbsSharedPrefData>().getToken}");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

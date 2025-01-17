@@ -121,7 +121,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ).padBottom(bottom: 20.h),
                             },
                             CustomButton(
-                              isLoading: false,
+                              isLoading:
+                                  state.loginStatus == AbsNormalStatus.LOADING,
                               lable: mode == AuthMode.LOGIN
                                   ? "Log In"
                                   : 'Register',
@@ -146,11 +147,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 50,
-                                child: SignInButton(
-                                  Buttons.Google,
-                                  onPressed: () => getIt<AuthBloc>()
-                                      .add(AuthGoogleSignInEvent()),
-                                ),
+                                child:
+                                    state.loginStatus == AbsNormalStatus.LOADING
+                                        ? Center(
+                                            child: CircularProgressIndicator
+                                                .adaptive(),
+                                          )
+                                        : SignInButton(
+                                            Buttons.Google,
+                                            onPressed: () => getIt<AuthBloc>()
+                                                .add(AuthGoogleSignInEvent()),
+                                          ),
                               ),
                             ).padBottom(bottom: 20.h),
                             RichText(
