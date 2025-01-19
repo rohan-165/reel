@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'LogIn',
+                                  mode == AuthMode.LOGIN ? 'LogIn' : "Register",
                                   style:
                                       Theme.of(context).textTheme.headlineLarge,
                                 ),
