@@ -8,6 +8,17 @@ class VideoRepository {
   }) =>
       [
         ReelModel(
+          'https://www.sample-videos.com/video321/mp4/720/big_buck_bunny_720p_30mb.mp4',
+          'Rahul',
+          musicName: 'In the name of Love',
+          reelDescription: "Life is better when you're laughing.",
+          profileUrl:
+              'https://opt.toiimg.com/recuperator/img/toi/m-69257289/69257289.jpg',
+          likeCount: 20 + likeCount,
+          isLiked: isLiked,
+          commentList: comments,
+        ),
+        ReelModel(
           'https://cdn.pixabay.com/video/2016/04/18/2849-163375551_large.mp4',
           'Darshan Patil',
           likeCount: 800 + likeCount,
