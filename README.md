@@ -20,6 +20,9 @@ samples, guidance on mobile development, and a full API reference.
 ### Home Screen
 ![Home Screen](screenshots/reel.jpg)
 
+### Comment View
+![Home Screen](screenshots/comment.jpg)
+
 ### Share View
 ![Home Screen](screenshots/share.jpg)
  
