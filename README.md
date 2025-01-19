@@ -18,12 +18,13 @@ samples, guidance on mobile development, and a full API reference.
 ## Screenshots
 
 ### Home Screen
-![Home Screen](screenshots/reel.jpg)
+<img src="screenshots/reel.jpg" alt="Home Screen" width="500" height="300">
 
 ### Comment View
-![Home Screen](screenshots/comment.jpg)
+<img src="screenshots/comment.jpg" alt="Comment View" width="500" height="300">
 
 ### Share View
-![Home Screen](screenshots/share.jpg)
+<img src="screenshots/share.jpg" alt="Share View" width="500" height="300">
+
  
 
