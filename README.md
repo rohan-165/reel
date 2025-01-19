@@ -18,9 +18,9 @@ samples, guidance on mobile development, and a full API reference.
 ## Screenshots
 
 ### Home Screen
-![Home Screen](https://github.com/rohan-165/reel/screenshot/reel.jpg)
+![Home Screen](https://github.com/rohan-165/reel/screenshots/reel.jpg)
 
 ### Share View
-![Home Screen](https://github.com/rohan-165/reel/screenshot/share.jpg)
+![Home Screen](https://github.com/rohan-165/reel/screenshots/share.jpg)
  
 
