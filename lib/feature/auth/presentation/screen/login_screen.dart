@@ -65,6 +65,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     if (value == null || value.isEmpty) {
                                       return 'Email is required';
                                     }
+                                    // Check if the email ends with @gmail.com
+                                    if (!RegExp(r'^[\w-\.]+@gmail\.com$')
+                                        .hasMatch(value)) {
+                                      return 'Please enter a valid email address';
+                                    }
                                     return null;
                                   },
                                   keyboardType: TextInputType.emailAddress,
